@@ -135,7 +135,61 @@
     </style>
 </head>
 <body>
-    <div id="appContainer" class="p-4 md:p-6 max-w-[1200px] mx-auto">
+
+<!-- ========== LANDING PAGE ========== -->
+<div id="landingPage" class="min-h-screen flex">
+
+    <!-- KIRI -->
+    <div class="w-1/2 bg-black flex items-center justify-center">
+        <h1 class="text-white text-6xl font-bold">Gr.</h1>
+    </div>
+
+    <!-- KANAN -->
+    <div class="w-1/2 bg-white flex items-center justify-center">
+        <div class="w-full max-w-sm">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                Selamat datang Bapak dan Ibu Guru BK SMP Kota Balikpapan
+            </h2>
+            <h2 class="text-lg text-gray-800 mb-6">
+                Silahkan login untuk mengelola e-Visum MGBK SMP. Selamat bekerja.
+            </h2>
+
+            <div class="space-y-4">
+                <input
+                    id="username"
+                    type="text"
+                    placeholder="Username"
+                    class="w-full border rounded-lg p-3"
+                />
+
+                <input
+                    id="password"
+                    type="password"
+                    placeholder="Password"
+                    class="w-full border rounded-lg p-3"
+                />
+
+                <button
+                    onclick="login()"
+                    class="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800"
+                >
+                    Masuk Aplikasi
+                </button>
+<div className="mt-8 pt-6 border-t border-slate-100 text-center text-[9px] text-slate-400">
+  <span>&copy; 2026</span>
+  <span className="ml-2">Developed by Galih MGBK SMP</span>
+</div>
+                <p id="loginError" class="text-red-600 text-sm hidden">
+                    Username atau password salah
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- ========== END LANDING PAGE ========== -->
+
+    <div id="appContainer" class="hidden p-4 md:p-6 max-w-[1200px] mx-auto">
         <!-- Header -->
         <header class="no-print mb-8 text-center">
             <h1 class="text-3xl font-black text-indigo-800 flex items-center justify-center gap-3">
@@ -148,13 +202,21 @@
         <div class="no-print bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-10">
             <div class="flex items-center justify-between mb-6 border-b pb-4">
                 <h2 class="font-bold text-slate-800 flex items-center gap-2">
-                    <i class="ph ph-sliders text-indigo-600"></i> Developed by Galih MGBK SMP Balikpapan
+                    <i class="ph ph-sliders text-indigo-600"></i> Form Pengisian
                 </h2>
-                <div class="flex gap-2">
-                    <button onclick="window.saveAsPdf()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all">
-                        <i class="ph-bold ph-download-simple"></i> UNDUH PDF
-                    </button>
-                </div>
+<div class="flex gap-2">
+    <!-- Tombol Unduh PDF -->
+    <button onclick="window.saveAsPdf()"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all">
+        <i class="ph-bold ph-download-simple"></i> UNDUH PDF
+    </button>
+
+    <!-- Tombol Logout -->
+    <button onclick="logout()"
+        class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all">
+        <i class="ph-bold ph-sign-out"></i> LOGOUT
+    </button>
+</div>
             </div>
 
             <form id="visum-form">
@@ -327,6 +389,37 @@
             </div>
         </div>
     </div>
+
+<script>
+function login() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    const error = document.getElementById('loginError');
+
+    const users = [
+        { u: '001', p: 'p001' },
+        { u: '002', p: 'p002' }
+    ];
+
+    const valid = users.some(x => x.u === user && x.p === pass);
+
+    if (valid) {
+        document.getElementById('landingPage').classList.add('hidden');
+        document.getElementById('appContainer').classList.remove('hidden');
+        error.classList.add('hidden');
+    } else {
+        error.classList.remove('hidden');
+    }
+}
+
+function logout() {
+    document.getElementById('appContainer').classList.add('hidden');
+    document.getElementById('landingPage').classList.remove('hidden');
+
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+}
+</script>
 
     <script type="module">
         const OFFICIALS = [
