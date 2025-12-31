@@ -137,7 +137,7 @@
 <body>
 
 <!-- ========== LANDING PAGE ========== -->
-<div id="landingPage" class="min-h-screen flex">
+<div id="landingPage" class="w-screen h-screen flex">
 
     <!-- KIRI -->
     <div class="w-1/2 bg-black flex items-center justify-center">
@@ -195,7 +195,7 @@
             <h1 class="text-3xl font-black text-indigo-800 flex items-center justify-center gap-3">
                 <i class="ph-fill ph-note-pencil"></i> e-Visum MGBK
             </h1>
-            <p class="text-slate-500 text-sm mt-1">Generator Pelaporan Hasil Kunjungan MGBK SMP Balikpapan</p>
+            <p class="text-slate-500 text-sm mt-1">Sistem Pelaporan Hasil Kunjungan MGBK SMP Balikpapan</p>
         </header>
     
         <!-- Panel Kontrol -->
@@ -391,33 +391,62 @@
     </div>
 
 <script>
-function login() {
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzQM8TFKQPa5QR0cz4gKRPzsMrYuy4VC-arJE62D5nbYowoLjx8kay1uDCB1_JXlbv/exec";
+
+async function login() {
     const user = document.getElementById('username').value;
     const pass = document.getElementById('password').value;
     const error = document.getElementById('loginError');
+    const loginBtn = document.querySelector('button[onclick="login()"]');
 
-    const users = [
-        { u: '001', p: 'p001' },
-        { u: '002', p: 'p002' }
-    ];
+    loginBtn.innerText = "Mengecek...";
+    loginBtn.disabled = true;
 
-    const valid = users.some(x => x.u === user && x.p === pass);
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ username: user, password: pass }),
+            redirect: 'follow'
+        });
 
-    if (valid) {
-        document.getElementById('landingPage').classList.add('hidden');
-        document.getElementById('appContainer').classList.remove('hidden');
-        error.classList.add('hidden');
-    } else {
+        const data = await response.json();
+
+        if (data.result === 'success') {
+document.getElementById('landingPage').classList.add('hidden');
+    // Pastikan ID ini sama dengan ID pembungkus aplikasi Anda (appContainer atau appPage)
+    document.getElementById('appContainer').classList.remove('hidden'); 
+    error.classList.add('hidden');
+        } else {
+            error.innerText = "Username atau password salah";
+            error.classList.remove('hidden');
+        }
+    } catch (err) {
+        error.innerText = "Terjadi kesalahan koneksi";
         error.classList.remove('hidden');
+    } finally {
+        loginBtn.innerText = "Masuk Aplikasi";
+        loginBtn.disabled = false;
     }
 }
 
 function logout() {
+    // 1. Sembunyikan halaman aplikasi
     document.getElementById('appContainer').classList.add('hidden');
+    
+    // 2. Munculkan kembali halaman login
     document.getElementById('landingPage').classList.remove('hidden');
 
+    // 3. Kosongkan input username dan password agar aman
     document.getElementById('username').value = '';
     document.getElementById('password').value = '';
+    
+    // 4. Sembunyikan pesan error jika sebelumnya ada
+    const error = document.getElementById('loginError');
+    if (error) error.classList.add('hidden');
+    
+    // Opsional: Scroll ke atas agar tampilan login bersih
+    window.scrollTo(0, 0);
 }
 </script>
 
